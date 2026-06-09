@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #ff477e;
+  --color-primary-container: #2c0f16;
+  --color-secondary: #fcd5ce;
+  --color-secondary-container: #4a232c;
+  --color-tertiary: #dfb24c;
+  --color-surface: #120e10;
+  --color-surface-dim: #090708;
+  --color-surface-container: #1b1417;
+  --color-surface-container-low: #150f11;
+  --color-surface-container-high: #241b1f;
+  --color-surface-container-highest: #2d2127;
+  --color-on-surface: #fbf7f8;
+  --color-on-surface-variant: #b09e0a;
+  --color-background: #090708;
+  --color-on-background: #fbf7f8;
+  --color-outline: #5c454d;
+  --color-outline-variant: #3a282f;
+
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
+}
+
+@layer utilities {
+  .glass-card {
+    background: rgba(18, 13, 15, 0.75);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 71, 126, 0.15);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+  
+  .glass-panel {
+    background: rgba(14, 10, 11, 0.85);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(255, 71, 126, 0.12);
+  }
+
+  .bg-pattern {
+    background-image: radial-gradient(rgba(255, 71, 126, 0.08) 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #ff477e 0%, #fcd5ce 50%, #dfb24c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #ff477e 0%, #db2c62 100%);
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(255, 71, 126, 0.25);
+  }
+  
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+body {
+  background-color: #090708;
+  color: #fbf7f8;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
