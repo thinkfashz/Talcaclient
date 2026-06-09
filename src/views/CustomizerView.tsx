@@ -1,262 +1,220 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, CheckCircle2, Square, Circle, Sparkles, Gem, Flower2 } from 'lucide-react';
-import { NailSimulator } from '../components/NailSimulator';
+import { ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
 
 const COLORS = [
-  { id: 'obsidian', hex: '#000000', name: 'Negro Obsidiana' },
-  { id: 'cream', hex: '#FDFBF7', name: 'Blanco Crema' },
-  { id: 'ash', hex: '#a3a3a3', name: 'Gris Ceniza / Plata' },
-  { id: 'nude', hex: '#e5c9b7', name: 'Nude Elegante' },
-  { id: 'graphite', hex: '#262626', name: 'Grafito Premium' },
+  { id: 'rose', hex: '#e83f6f', name: 'Rose Signature' },
+  { id: 'nude', hex: '#eac7cd', name: 'Nude Blush' },
+  { id: 'gold', hex: '#d4af37', name: 'Golden VIP' },
+  { id: 'lavender', hex: '#b392f0', name: 'Lavanda Pro' },
+  { id: 'green', hex: '#4bb543', name: 'Verde Spa' },
+  { id: 'blue', hex: '#1da1f2', name: 'Blue Glass' },
+  { id: 'orange', hex: '#ff8c00', name: 'Sunset Glow' },
 ];
 
 const SHAPES = [
-  { id: 'almond', name: 'Almendra', component: <div className="w-5 h-8 border-2 border-current rounded-t-[50%] rounded-b" /> },
-  { id: 'square', name: 'Cuadrada', component: <div className="w-5 h-8 border-2 border-current rounded-t-sm rounded-b-sm" /> },
-  { id: 'coffin', name: 'Coffin', component: <div className="w-5 h-8 border-2 border-current rounded-b-sm" style={{ clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)' }} /> },
-  { id: 'stiletto', name: 'Stiletto', component: <div className="w-5 h-8 border-2 border-current rounded-b-sm" style={{ clipPath: 'polygon(50% 0%, 100% 100%, 0% 100%)' }} /> },
-  { id: 'oval', name: 'Ovalada', component: <div className="w-5 h-8 border-2 border-current rounded-[50%]" /> },
+  { id: 'almond', name: 'Almendra' },
+  { id: 'square', name: 'Cuadrada' },
+  { id: 'round', name: 'Redonda' },
+  { id: 'coffin', name: 'Coffin' },
+  { id: 'stiletto', name: 'Stiletto' },
 ];
 
 const EXTRAS = [
-  { id: 'crystals', name: 'Cristales', price: 15, icon: <Gem className="w-5 h-5 text-white" /> },
-  { id: 'glitter', name: 'Glitter Destellos', price: 10, icon: <Sparkles className="w-5 h-5 text-white" /> },
-  { id: 'mirror', name: 'Efecto Espejo', price: 20, icon: <Circle className="w-5 h-5 text-white" fill="url(#mirrorGrad2)" /> },
-  { id: 'floral', name: 'Follaje Floral', price: 25, icon: <Flower2 className="w-5 h-5 text-white" /> },
+  { id: 'gloss', name: 'Brillo acrílico glossy', price: 0 },
+  { id: 'chrome', name: 'Efecto chrome / espejo', price: 3000 },
+  { id: 'crystals', name: 'Cristales premium', price: 5000 },
+  { id: 'floral', name: 'Detalle floral fino', price: 4000 },
 ];
 
 export const CustomizerView: React.FC = () => {
   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
+  const [customColor, setCustomColor] = useState('#e83f6f');
   const [selectedShape, setSelectedShape] = useState(SHAPES[0]);
-  const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
-  
-  const basePrice = 25;
-  const extrasTotal = selectedExtras.reduce((sum, extraId) => {
-    const extra = EXTRAS.find(e => e.id === extraId);
-    return sum + (extra?.price || 0);
-  }, 0);
-  const total = basePrice + extrasTotal;
+  const [selectedExtra, setSelectedExtra] = useState(EXTRAS[0]);
 
-  const toggleExtra = (id: string) => {
-    setSelectedExtras(prev => 
-      prev.includes(id) ? prev.filter(e => e !== id) : [...prev, id]
-    );
-  };
+  const activeColor = selectedColor.id === 'custom' ? customColor : selectedColor.hex;
+  const total = 25000 + selectedExtra.price;
 
   const generateWhatsAppLink = () => {
-    const shapeText = selectedShape.name;
-    const colorText = selectedColor.name;
-    const extrasNames = selectedExtras.length > 0 
-      ? selectedExtras.map(id => EXTRAS.find(e => e.id === id)?.name).join(', ') 
-      : 'Esmaltado plano';
-    
-    const text = `Hola! He personalizado mi diseño en el visualizador interactivo de Dharynails.%0A%0A*Esmaltado Base:* ${colorText}%0A*Forma Elegida:* ${shapeText}%0A*Detalles Añadidos:* ${extrasNames}%0A*Precio Estimado:* $${total}.000%0A%0A¿Tienen disponibilidad de hora para realizarlo?`;
-    return `https://wa.me/56912345678?text=${text}`;
+    const text = `Hola Dharynails! Quiero reservar este diseño personalizado:%0A%0A*Color:* ${selectedColor.name}%0A*Color HEX:* ${activeColor}%0A*Forma:* ${selectedShape.name}%0A*Acabado:* ${selectedExtra.name}%0A*Total estimado:* $${total.toLocaleString('es-CL')}%0A%0A¿Tienen disponibilidad?`;
+    return `https://wa.me/56962493456?text=${text}`;
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="pb-40 px-4 md:px-12 pt-24 max-w-5xl mx-auto flex flex-col md:flex-row gap-8 lg:gap-12"
+      className="pb-40 px-4 md:px-12 pt-24 max-w-5xl mx-auto grid md:grid-cols-[1fr_0.95fr] gap-6 lg:gap-10"
     >
-      <svg width="0" height="0">
-        <defs>
-          <linearGradient id="mirrorGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#888888" />
-            <stop offset="50%" stopColor="#ffffff" />
-            <stop offset="100%" stopColor="#222222" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      {/* Left Column: Visual Preview */}
-      <div className="w-full md:w-1/2 flex flex-col gap-4 md:gap-6">
-        <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-white text-xs font-bold uppercase tracking-wider font-mono">
-            <Sparkles className="w-3.5 h-3.5" /> Simulador Vectorial Activo
+      <section className="space-y-5">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white text-xs font-bold uppercase tracking-wider font-mono">
+            <Sparkles className="w-3.5 h-3.5" /> Motor de diseño live
           </div>
-          <h2 className="font-serif text-3xl md:text-5xl text-white font-extrabold tracking-tight">Crea tu Estilo</h2>
-          <p className="font-sans text-sm md:text-base text-stone-400">
-            Experimenta en tiempo real con tonos infinitos, siluetas estilizadas y acabados de alta gama.
+          <h2 className="font-serif text-3xl md:text-5xl text-white font-extrabold tracking-tight">Crea tu diseño</h2>
+          <p className="font-sans text-sm md:text-base text-stone-400 leading-relaxed">
+            Paleta arriba, mano blanca responsive y uñas que cambian en vivo. Ideal para que la clienta elija color, forma y acabado antes de reservar.
           </p>
         </div>
-        
-        <div className="relative w-full rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.85)] aspect-[4/5] bg-black/40 flex items-center justify-center border border-white/5">
-          {/* Interactive Dynamic 3D/Vector Simulation Engine */}
-          <NailSimulator 
-            color={selectedColor.hex}
-            shapeId={selectedShape.id}
-            selectedExtras={selectedExtras}
-          />
 
-          {/* Floater indicator badge */}
-          <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full border border-white/20" style={{ backgroundColor: selectedColor.hex }} />
-            <span className="font-mono text-[10px] font-bold text-white uppercase tracking-wider">{selectedColor.name}</span>
-          </div>
-
-          <div className="absolute bottom-4 right-4 bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl text-[10px] font-bold text-white uppercase tracking-wider">
-            Forma: {selectedShape.name}
-          </div>
-        </div>
-      </div>
-
-      {/* Right Column: Controls */}
-      <div className="w-full md:w-1/2 flex flex-col gap-8">
-        
-        {/* Colors */}
-        <section className="space-y-3.5">
-          <div className="flex justify-between items-center">
-            <h3 className="font-serif text-lg font-bold text-white">1. Tono de Esmaltado</h3>
-            <span className="font-sans text-xs uppercase tracking-wider font-extrabold text-white">{selectedColor.name}</span>
-          </div>
-          <div className="flex gap-3 md:gap-4 overflow-x-auto hide-scrollbar pb-2 items-center">
-            {COLORS.map(color => {
-              const isSelected = selectedColor.id === color.id;
-              return (
-                <button 
-                  key={color.id}
-                  type="button"
-                  onClick={() => setSelectedColor(color)}
-                  className={`relative flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full p-1 border-2 transition-all active:scale-95 cursor-pointer ${
-                    isSelected ? 'border-white scale-105' : 'border-transparent hover:border-white/20'
-                  }`}
-                >
-                  <div 
-                    className="w-full h-full rounded-full shadow-inner border border-white/10" 
-                    style={{ backgroundColor: color.hex }} 
-                  />
-                  {isSelected && (
-                    <span className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 text-black shadow-md">
-                      <CheckCircle2 className="w-4 h-4 fill-current text-white" />
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-
-            {/* Custom real-time continuous color picker */}
-            <div className={`relative flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full p-1 border-2 transition-all flex items-center justify-center cursor-pointer bg-stone-900 group ${
-              selectedColor.id === 'custom' ? 'border-white scale-105 shadow-[0_0_10px_rgba(255,255,255,0.2)]' : 'border-dashed border-stone-600 hover:border-stone-400'
-            }`}>
-              <input 
-                type="color"
-                value={selectedColor.id === 'custom' ? selectedColor.hex : '#dfb24c'}
-                onChange={(e) => {
-                  const hex = e.target.value;
-                  setSelectedColor({ id: 'custom', hex: hex, name: `Tono Libre (${hex.toUpperCase()})` });
-                }}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-              />
-              <div 
-                className="w-full h-full rounded-full border border-white/10"
-                style={{
-                  background: selectedColor.id === 'custom' 
-                    ? selectedColor.hex 
-                    : 'conic-gradient(from 0deg, red, yellow, lime, aqua, blue, magenta, red)'
-                }}
-              />
-              {selectedColor.id === 'custom' ? (
-                <span className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 text-black shadow-md z-20">
-                  <CheckCircle2 className="w-4 h-4 fill-current text-white" />
-                </span>
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-white pointer-events-none text-[8px] font-mono font-bold leading-none bg-black/20 group-hover:bg-transparent transition-colors rounded-full uppercase tracking-tighter">
-                  Libre
-                </div>
-              )}
+        <div className="rounded-[2rem] p-4 md:p-5 bg-white/[0.03] border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.65)] overflow-hidden">
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-stone-500 font-extrabold">Color activo</p>
+              <h3 className="font-serif text-2xl font-bold text-white">{selectedColor.name}</h3>
             </div>
+            <span className="w-12 h-12 rounded-full border border-white/20 shadow-[0_0_24px_rgba(255,255,255,0.12)]" style={{ background: activeColor }} />
           </div>
-        </section>
 
-        {/* Shape */}
-        <section className="space-y-3.5">
-          <div className="flex justify-between items-center">
-            <h3 className="font-serif text-lg font-bold text-white">2. Silueta & Forma</h3>
-            <span className="font-sans text-xs uppercase tracking-wider font-extrabold text-stone-400">{selectedShape.name}</span>
+          <div className="grid grid-cols-4 sm:grid-cols-8 gap-2.5 mb-4">
+            {COLORS.map((color) => (
+              <button
+                key={color.id}
+                onClick={() => setSelectedColor(color)}
+                className={`h-12 rounded-2xl border-2 transition-all active:scale-95 ${selectedColor.id === color.id ? 'border-white scale-105' : 'border-white/10'}`}
+                style={{ background: color.hex }}
+                title={color.name}
+              />
+            ))}
+            <label className={`relative h-12 rounded-2xl border-2 overflow-hidden cursor-pointer ${selectedColor.id === 'custom' ? 'border-white scale-105' : 'border-white/10'}`}>
+              <input
+                type="color"
+                value={customColor}
+                onChange={(e) => {
+                  setCustomColor(e.target.value);
+                  setSelectedColor({ id: 'custom', hex: e.target.value, name: `Color libre ${e.target.value.toUpperCase()}` });
+                }}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              <div className="w-full h-full" style={{ background: 'conic-gradient(red, yellow, lime, cyan, blue, magenta, red)' }} />
+              <span className="absolute inset-0 flex items-center justify-center bg-black/20 text-[9px] font-mono font-black uppercase text-white">Libre</span>
+            </label>
           </div>
-          <div className="grid grid-cols-5 gap-2.5">
-            {SHAPES.map(shape => {
-              const isSelected = selectedShape.id === shape.id;
-              return (
-                <button 
-                  key={shape.id}
-                  type="button"
-                  onClick={() => setSelectedShape(shape)}
-                  className={`flex flex-col items-center justify-center py-4 rounded-2xl transition-all duration-300 active:scale-95 cursor-pointer border ${
-                    isSelected 
-                      ? 'bg-white/10 border-white text-white shadow-md' 
-                      : 'glass-card border-white/5 text-stone-400 hover:border-white/20 hover:text-white'
-                  }`}
-                >
-                  <div className="mb-2 scale-110">{shape.component}</div>
-                  <span className="font-sans text-[10px] uppercase tracking-wider font-extrabold">{shape.name}</span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
 
-        {/* Embellishments */}
-        <section className="space-y-3.5">
-          <div className="flex justify-between items-center">
-            <h3 className="font-serif text-lg font-bold text-white">3. Efectos & Cristales</h3>
-            <span className="font-sans text-[10px] uppercase tracking-wider font-extrabold text-stone-500">Múltiple</span>
-          </div>
-          <div className="grid grid-cols-2 gap-3 md:gap-4">
-            {EXTRAS.map(extra => {
-              const isSelected = selectedExtras.includes(extra.id);
-              return (
-                <div 
-                  key={extra.id}
-                  onClick={() => toggleExtra(extra.id)}
-                  className={`rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2.5 relative overflow-hidden group cursor-pointer transition-all duration-300 border ${
-                    isSelected ? 'border-white bg-white/10 shadow-[0_0_15px_rgba(255,255,255,0.1)]' : 'glass-card border-white/5 hover:border-white/20 hover:bg-white/[0.04]'
-                  }`}
-                >
-                  <div className="absolute top-3 right-3">
-                    {isSelected ? (
-                      <CheckCircle2 className="text-white w-4 h-4 fill-current text-black" />
-                    ) : (
-                      <Square className="text-stone-500 w-4 h-4 opacity-40 group-hover:opacity-75" />
-                    )}
-                  </div>
-                  <div className="w-10 h-10 rounded-xl bg-black/40 flex items-center justify-center mb-1">
-                    {extra.icon}
-                  </div>
-                  <div className="space-y-0.5">
-                    <span className="font-sans font-bold text-xs md:text-sm text-white leading-tight block">{extra.name}</span>
-                    <span className="font-sans text-[11px] font-bold text-stone-400 block">+${extra.price}.000 Chp</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      </div>
+          <div className="relative w-full aspect-[1/1] max-h-[430px] rounded-[1.7rem] bg-black overflow-hidden border border-white/10 flex items-center justify-center">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(232,63,111,.18),transparent_35%),radial-gradient(circle_at_0%_100%,rgba(255,255,255,.08),transparent_35%)]" />
+            <motion.svg
+              viewBox="0 0 360 420"
+              className="relative w-full h-full max-w-[360px] mx-auto"
+              initial={{ y: 26, opacity: 0, scale: 0.96 }}
+              animate={{ y: [8, 0, 4], opacity: 1, scale: 1 }}
+              transition={{ duration: 1.1, ease: 'easeOut' }}
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <linearGradient id="whiteFinger" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stopColor="#ffffff" />
+                  <stop offset="0.55" stopColor="#f3eee8" />
+                  <stop offset="1" stopColor="#d9d1c8" />
+                </linearGradient>
+                <linearGradient id="acrylicLive" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stopColor="#ffffff" stopOpacity="0.85" />
+                  <stop offset="0.2" stopColor={activeColor} stopOpacity="0.98" />
+                  <stop offset="0.72" stopColor={activeColor} stopOpacity="0.80" />
+                  <stop offset="1" stopColor="#ffffff" stopOpacity="0.55" />
+                </linearGradient>
+                <filter id="softHandShadow" x="-30%" y="-30%" width="160%" height="160%">
+                  <feDropShadow dx="0" dy="20" stdDeviation="16" floodColor="#000" floodOpacity="0.52" />
+                </filter>
+              </defs>
 
-      {/* Floating Action Bar */}
-      <div className="fixed bottom-[74px] md:bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-24px)] md:w-full max-w-4xl z-40 glass-card shadow-[0_15px_50px_rgba(0,0,0,0.95)] rounded-3xl p-4 md:p-5 flex items-center justify-between border-white/10 bg-black/95">
-        <div>
-          <p className="font-sans text-[9px] uppercase tracking-widest font-extrabold text-stone-400 mb-1">Presupuesto Estimado</p>
-          <div className="flex items-baseline gap-1">
-            <span className="font-serif font-extrabold text-2xl md:text-3xl text-white">${total}.000</span>
-            <span className="font-sans text-[10px] text-stone-500 uppercase font-bold">Chp</span>
+              <motion.g filter="url(#softHandShadow)" animate={{ y: [0, -4, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>
+                <ellipse cx="180" cy="330" rx="116" ry="70" fill="url(#whiteFinger)" />
+                {[
+                  { x: 78, y: 150, r: -18, h: 168, w: 48 },
+                  { x: 130, y: 112, r: -8, h: 205, w: 54 },
+                  { x: 180, y: 92, r: 0, h: 220, w: 58 },
+                  { x: 232, y: 112, r: 8, h: 205, w: 54 },
+                  { x: 282, y: 150, r: 18, h: 168, w: 48 },
+                ].map((finger, i) => (
+                  <motion.g
+                    key={i}
+                    transform={`translate(${finger.x} ${finger.y}) rotate(${finger.r})`}
+                    initial={{ y: 26, opacity: 0 }}
+                    animate={{ y: [8, 0, 3], opacity: 1 }}
+                    transition={{ duration: 0.9, delay: i * 0.07, ease: 'easeOut' }}
+                  >
+                    <rect x={-finger.w / 2} y="22" width={finger.w} height={finger.h} rx={finger.w / 2} fill="url(#whiteFinger)" />
+                    <motion.path
+                      d={shapePath(selectedShape.id)}
+                      fill="url(#acrylicLive)"
+                      stroke="rgba(255,255,255,.55)"
+                      strokeWidth="1.5"
+                      animate={{ d: shapePath(selectedShape.id) }}
+                      transition={{ type: 'spring', stiffness: 120, damping: 18 }}
+                    />
+                    <path d="M-8 18 C-11 -14 -8 -38 2 -50" stroke="#fff" strokeWidth="5" strokeLinecap="round" opacity="0.38" />
+                    <path d="M-8 18 C-11 -14 -8 -38 2 -50" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" opacity="0.82" />
+                    {selectedExtra.id === 'chrome' && <path d={shapePath(selectedShape.id)} fill="url(#acrylicLive)" opacity="0.45" style={{ mixBlendMode: 'screen' }} />}
+                    {selectedExtra.id === 'crystals' && <g fill="#fff" opacity="0.92"><circle cx="-10" cy="36" r="3"/><circle cx="0" cy="44" r="3.8"/><circle cx="10" cy="36" r="3"/></g>}
+                    {selectedExtra.id === 'floral' && <g stroke="#fff" strokeWidth="1.8" fill="none" opacity="0.86"><path d="M-8 46 C3 18 8 -13 12 -42"/><ellipse cx="4" cy="2" rx="6" ry="3" fill="#fff" transform="rotate(-25 4 2)"/></g>}
+                  </motion.g>
+                ))}
+              </motion.g>
+            </motion.svg>
           </div>
         </div>
-        <a 
-          href={generateWhatsAppLink()}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-primary flex items-center gap-2 px-6 md:px-10 h-12 md:h-14 rounded-2xl text-black bg-white font-sans font-extrabold text-xs md:text-sm shadow-[0_4px_20px_rgba(255,255,255,0.15)] hover:bg-stone-200 transition-all text-center uppercase tracking-wider cursor-pointer"
-        >
-          <span>Agendar Diseño Personalizado</span>
-          <ArrowRight className="w-4 h-4" />
-        </a>
-      </div>
+      </section>
+
+      <section className="space-y-5">
+        <div className="glass-card rounded-[2rem] p-5 border-white/5 bg-black/70">
+          <h3 className="font-serif text-2xl font-bold text-white mb-2">Configura tu reserva</h3>
+          <p className="font-sans text-sm text-stone-400">Todo cabe en pantalla pequeña: forma, acabado, precio estimado y botón directo a WhatsApp.</p>
+        </div>
+
+        <div className="space-y-3">
+          <h4 className="font-serif text-lg font-bold text-white">1. Forma</h4>
+          <div className="grid grid-cols-2 gap-3">
+            {SHAPES.map(shape => (
+              <button key={shape.id} onClick={() => setSelectedShape(shape)} className={`rounded-2xl p-4 text-left border transition-all ${selectedShape.id === shape.id ? 'bg-white text-black border-white' : 'glass-card border-white/5 text-white'}`}>
+                <span className="font-bold text-sm block">{shape.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <h4 className="font-serif text-lg font-bold text-white">2. Acabado</h4>
+          <div className="space-y-3">
+            {EXTRAS.map(extra => (
+              <button key={extra.id} onClick={() => setSelectedExtra(extra)} className={`w-full rounded-2xl p-4 text-left border flex items-center justify-between ${selectedExtra.id === extra.id ? 'bg-white text-black border-white' : 'glass-card border-white/5 text-white'}`}>
+                <div>
+                  <span className="font-bold text-sm block">{extra.name}</span>
+                  <span className="font-mono text-[11px] opacity-70">{extra.price === 0 ? 'Sin recargo' : `+$${extra.price.toLocaleString('es-CL')}`}</span>
+                </div>
+                {selectedExtra.id === extra.id && <CheckCircle2 className="w-5 h-5" />}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="glass-card rounded-[2rem] p-5 bg-white/[0.03] border-white/10">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 font-extrabold">Resumen</p>
+          <h4 className="font-serif text-3xl font-extrabold text-white mt-1">${total.toLocaleString('es-CL')}</h4>
+          <p className="text-sm text-stone-400 mt-2">{selectedColor.name} · {selectedShape.name} · {selectedExtra.name}</p>
+          <a href={generateWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="btn-primary rounded-2xl h-14 px-6 mt-5 flex items-center justify-center gap-2 font-bold">
+            Reservar este diseño <ArrowRight className="w-5 h-5" />
+          </a>
+        </div>
+      </section>
     </motion.div>
   );
 };
+
+function shapePath(shapeId: string) {
+  switch (shapeId) {
+    case 'square':
+      return 'M -22 50 L -22 -42 Q -22 -50 -14 -50 L 14 -50 Q 22 -50 22 -42 L 22 50 Q 22 58 0 58 Q -22 58 -22 50 Z';
+    case 'round':
+      return 'M -24 50 C -26 10 -17 -48 0 -50 C 17 -48 26 10 24 50 Q 22 58 0 58 Q -22 58 -24 50 Z';
+    case 'coffin':
+      return 'M -25 50 C -22 15 -17 -32 -10 -50 L 10 -50 C 17 -32 22 15 25 50 Q 22 58 0 58 Q -22 58 -25 50 Z';
+    case 'stiletto':
+      return 'M -23 50 C -20 20 -10 -28 0 -66 C 10 -28 20 20 23 50 Q 20 58 0 58 Q -20 58 -23 50 Z';
+    case 'almond':
+    default:
+      return 'M -24 50 C -25 12 -13 -56 0 -62 C 13 -56 25 12 24 50 Q 22 58 0 58 Q -22 58 -24 50 Z';
+  }
+}
