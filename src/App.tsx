@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Sparkles, Image as ImageIcon, Gift, Calendar, Award, Crown, Loader2 } from 'lucide-react';
+import { Home, Sparkles, Image as ImageIcon, Gift, Calendar, Award, Crown, Loader2, MessageCircle } from 'lucide-react';
 import { HomeView } from './views/HomeView';
 import { GalleryView } from './views/GalleryView';
 import { CustomizerView } from './views/CustomizerView';
@@ -8,16 +8,16 @@ import { AgendaView } from './views/AgendaView';
 import { FidelidadView } from './views/FidelidadView';
 import { TabType } from './types';
 import { AnimatePresence, motion } from 'motion/react';
-import { BRAND_AVATAR } from './assets/nailImages';
+import { DHARYNAILS_LOGO } from './assets/nailImages';
+
+const WHATSAPP_LINK = 'https://wa.me/56962493456?text=Hola%20Dharynails%2C%20quiero%20consultar%20por%20una%20hora%20disponible';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('home');
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1400);
+    const timer = setTimeout(() => setIsLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -50,59 +50,27 @@ export default function App() {
             key="loading-screen"
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.04, transition: { duration: 0.35, ease: 'easeOut' } }}
+            exit={{ opacity: 0, scale: 1.02, transition: { duration: 0.28, ease: 'easeOut' } }}
             className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center"
           >
             <div className="absolute top-[25%] left-[10%] w-[80%] h-[280px] bg-primary/10 rounded-full blur-[110px] pointer-events-none" />
-            <div className="flex flex-col items-center max-w-sm px-6 text-center space-y-6">
-              <motion.div
+            <div className="flex flex-col items-center max-w-sm px-6 text-center space-y-5">
+              <motion.img
+                src={DHARYNAILS_LOGO}
+                alt="Logo Dharynails recreado"
                 initial={{ scale: 0.86, opacity: 0 }}
-                animate={{ scale: [0.86, 1.08, 1], opacity: 1 }}
-                transition={{ duration: 0.85, ease: 'easeOut' }}
-                className="relative"
-              >
-                <div className="absolute inset-0 bg-primary/30 rounded-full blur-2xl animate-pulse" />
-                <div className="w-20 h-20 rounded-full flex items-center justify-center bg-stone-950 border border-white/10 relative shadow-[0_0_30px_rgba(255,71,126,0.22)]">
-                  <Crown className="w-10 h-10 text-white animate-pulse" />
-                </div>
-              </motion.div>
-
+                animate={{ scale: [0.86, 1.05, 1], opacity: 1 }}
+                transition={{ duration: 0.65, ease: 'easeOut' }}
+                className="w-20 h-20 rounded-full border border-white/10 shadow-[0_0_30px_rgba(255,71,126,0.22)]"
+              />
               <div className="space-y-2">
-                <motion.h2 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15, duration: 0.55 }}
-                  className="font-serif text-3xl font-black tracking-[0.25em] text-white"
-                >
-                  DHARY<span className="text-stone-400 font-light italic ml-1">NAILS</span>
-                </motion.h2>
-                <motion.p 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.62 }}
-                  transition={{ delay: 0.25, duration: 0.5 }}
-                  className="font-mono text-[9px] tracking-[0.3em] uppercase text-stone-400 font-bold"
-                >
-                  Cargando experiencia premium
-                </motion.p>
+                <h2 className="font-serif text-3xl font-black tracking-[0.25em] text-white">DHARY<span className="text-stone-400 font-light italic ml-1">NAILS</span></h2>
+                <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-stone-400 font-bold">Cargando experiencia premium</p>
               </div>
-
               <div className="w-48 h-[2px] bg-stone-950 rounded-full overflow-hidden relative border border-white/5">
-                <motion.div 
-                  initial={{ left: '-100%' }}
-                  animate={{ left: '100%' }}
-                  transition={{ repeat: Infinity, duration: 1, ease: 'easeInOut' }}
-                  className="absolute top-0 bottom-0 w-2/3 bg-gradient-to-r from-transparent via-primary to-transparent"
-                />
+                <motion.div initial={{ left: '-100%' }} animate={{ left: '100%' }} transition={{ repeat: Infinity, duration: 0.85, ease: 'easeInOut' }} className="absolute top-0 bottom-0 w-2/3 bg-gradient-to-r from-transparent via-primary to-transparent" />
               </div>
-
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.45 }}
-                transition={{ delay: 0.35, duration: 0.45 }}
-                className="font-sans text-[10px] uppercase tracking-wider text-stone-500 font-extrabold flex items-center gap-1.5"
-              >
-                <Loader2 className="w-3.5 h-3.5 animate-spin" /> Imágenes internas listas
-              </motion.span>
+              <span className="font-sans text-[10px] uppercase tracking-wider text-stone-500 font-extrabold flex items-center gap-1.5"><Loader2 className="w-3.5 h-3.5 animate-spin" /> Visual estable</span>
             </div>
           </motion.div>
         )}
@@ -112,36 +80,28 @@ export default function App() {
         <div className="absolute top-[10%] left-[-20%] w-[80%] h-[500px] bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-[160px] pointer-events-none -z-10" />
         <div className="absolute bottom-[20%] right-[-20%] w-[80%] h-[500px] bg-gradient-to-bl from-white/3 to-transparent rounded-full blur-[160px] pointer-events-none -z-10" />
 
-        <header className="fixed top-0 w-full z-50 glass-panel !rounded-none !border-x-0 !border-t-0 flex items-center justify-between px-6 h-[72px] transition-all duration-300">
-          <div className="flex items-center gap-2">
-            <div className="flex gap-1.5 mr-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-white relative" />
-              <span className="w-2.5 h-2.5 rounded-full bg-stone-500" />
-              <span className="w-2.5 h-2.5 rounded-full bg-stone-700" />
-            </div>
+        <header className="fixed top-0 w-full z-50 glass-panel !rounded-none !border-x-0 !border-t-0 flex items-center justify-between px-5 h-[72px] transition-all duration-300">
+          <div className="w-12 flex gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-white" />
+            <span className="w-2.5 h-2.5 rounded-full bg-stone-500" />
+            <span className="w-2.5 h-2.5 rounded-full bg-stone-700" />
           </div>
-          
-          <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center cursor-pointer pb-1" onClick={() => setActiveTab('home')}>
-            <Crown className="w-4.5 h-4.5 text-white animate-pulse" />
-            <h1 className="font-serif text-[18px] md:text-2xl font-black tracking-[0.25em] leading-none mt-1">
+
+          <button className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center cursor-pointer pb-1 bg-transparent" onClick={() => setActiveTab('home')}>
+            <img src={DHARYNAILS_LOGO} alt="Logo Dharynails recreado" className="w-7 h-7 rounded-full border border-white/15 object-cover mb-0.5" />
+            <h1 className="font-serif text-[18px] md:text-2xl font-black tracking-[0.25em] leading-none">
               <span className="text-white">DHARY</span>
               <span className="text-stone-400 font-light italic ml-1">NAILS</span>
             </h1>
-          </div>
-          
-          <button className="w-9 h-9 rounded-full overflow-hidden border border-white/20 hover:border-white transition-all active:scale-95 cursor-pointer flex items-center justify-center bg-black/60 shadow-[0_0_12px_rgba(255,255,255,0.15)]" onClick={() => setActiveTab('home')}>
-            <img 
-              src={BRAND_AVATAR} 
-              alt="Dharynails Avatar" 
-              className="w-full h-full object-cover"
-            />
           </button>
+
+          <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full border border-[#25D366]/30 bg-[#25D366]/10 text-[#25D366] flex items-center justify-center shadow-[0_0_12px_rgba(37,211,102,0.16)]" aria-label="WhatsApp Dharynails">
+            <MessageCircle className="w-5 h-5" />
+          </a>
         </header>
 
         <main className="relative z-10 w-full pt-4">
-          <AnimatePresence mode="wait">
-            {renderView()}
-          </AnimatePresence>
+          <AnimatePresence mode="wait">{renderView()}</AnimatePresence>
         </main>
 
         <nav className="fixed bottom-0 w-full z-50 glass-panel !rounded-b-none !border-x-0 !border-b-0 md:hidden bg-black/95 shadow-[0_-10px_35px_rgba(0,0,0,0.8)]">
@@ -149,13 +109,7 @@ export default function App() {
             {navItems.map(({ id, icon: Icon, label }) => {
               const isActive = activeTab === id;
               return (
-                <button
-                  key={id}
-                  onClick={() => setActiveTab(id)}
-                  className={`flex flex-col items-center justify-center w-[4rem] transition-colors duration-300 active:scale-90 relative cursor-pointer group ${
-                    isActive ? 'text-white' : 'text-stone-500 hover:text-white'
-                  }`}
-                >
+                <button key={id} onClick={() => setActiveTab(id)} className={`flex flex-col items-center justify-center w-[4rem] transition-colors duration-300 active:scale-90 relative cursor-pointer group ${isActive ? 'text-white' : 'text-stone-500 hover:text-white'}`}>
                   <Icon className={`w-4.5 h-4.5 mb-1 transition-transform ${isActive ? 'scale-110 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.7)]' : 'text-stone-500'}`} />
                   <span className={`font-sans text-[8px] uppercase font-extrabold tracking-wider leading-none ${isActive ? 'text-white' : 'text-stone-500'}`}>{label}</span>
                   {isActive && <div className="absolute -bottom-2 w-1 h-1 rounded-full bg-white shadow-[0_0_8px_#ffffff]" />}
@@ -169,14 +123,7 @@ export default function App() {
           {navItems.map(({ id, icon: Icon, label }) => {
             const isActive = activeTab === id;
             return (
-              <button
-                key={id}
-                onClick={() => setActiveTab(id)}
-                title={label}
-                className={`p-3 rounded-xl transition-all duration-300 relative cursor-pointer group ${
-                  isActive ? 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.25)] scale-110' : 'text-stone-500 hover:text-white hover:bg-white/5'
-                }`}
-              >
+              <button key={id} onClick={() => setActiveTab(id)} title={label} className={`p-3 rounded-xl transition-all duration-300 relative cursor-pointer group ${isActive ? 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.25)] scale-110' : 'text-stone-500 hover:text-white hover:bg-white/5'}`}>
                 <Icon className="w-5 h-5" />
               </button>
             );
